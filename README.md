@@ -32,4 +32,4 @@ python main.py
 
 Note
 ---
-Note that Twitter allows you to perform a limited number of API calls with this free account
+Note that Twitter allows you to perform a limited number of API calls with this free account. This script will wait in case of reaching the rate limit. Hence, it may take a long time if you're running it against a viral Tweet.
