@@ -1,6 +1,7 @@
 from tweepy import Client, Paginator
 from os import getenv
 from dotenv import load_dotenv
+import argparse
 
 load_dotenv()
 
@@ -10,6 +11,11 @@ access_token = getenv('ACCESS_TOKEN')
 access_token_secret = getenv('ACCESS_TOKEN_SECRET')
 my_user_id = getenv('MY_USER_ID')
 tweet_id = getenv('TWEET_ID')
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-s", "--skip_following", help="Skip accounts that you have followed")
+parser.add_argument("-i", "--ignore", nargs='+', type=str, help="ignore and skip block this usernames")
+args = parser.parse_args()
 
 if None in [api_key, api_secret, access_token, access_token_secret, tweet_id]:
     raise Exception('You have to provide all of the following env vars: API_KEY, API_SECRET, ACCESS_TOKEN, '
@@ -39,7 +45,7 @@ for response in Paginator(client.get_liking_users, tweet_id, user_auth=True):
         print(f'in get_liking_users, response: {response}')
         continue
     for user in users:
-        if user.id in followings:
+        if (user.username in args.ignore) or (args.skip_following and user.id in followings):
             print(f'{user.username} liked but not blocked')
             continue
         client.block(user.id)
